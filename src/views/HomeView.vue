@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h1>Halo</h1>
+    <h1 class="title">Home Page</h1>
   </main>
 </template>
