@@ -19,7 +19,6 @@ export const useAuthStore = defineStore('authStore', {
                 if (res.ok) {
                     this.user = data
                 }
-                console.log(data)
             }
         },
         /**LOGIN OR REGISTER */
