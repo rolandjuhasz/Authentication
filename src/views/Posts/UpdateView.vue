@@ -52,6 +52,7 @@ onMounted(async () => {
         <p v-if="errors.body" class="error">{{ errors.body[0] }}</p>
       </div>
 
+
       <button class="primary-btn">Update</button>
     </form>
   </main>
