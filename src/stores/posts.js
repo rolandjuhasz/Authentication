@@ -7,6 +7,16 @@ export const usePostStore = defineStore('postStore', {
         }
     },
     actions: {
+/*********get all POST*********/
+
+async getAllPost() {
+    const res = await fetch('/api/posts')
+    const data = await res.json()
+    console.log(data)
+    return data;
+},
+
+        /*********CREATE A POST*********/
         async createPost(formData) {
             const res = await fetch('/api/posts/', {
                 method: 'post',
@@ -21,7 +31,7 @@ export const usePostStore = defineStore('postStore', {
             if(data.errors) {
                 this.errors = data.errors;
             } else {
-                console.log(data)
+                this.router.push({name: 'home'})
             }
         }
     }
