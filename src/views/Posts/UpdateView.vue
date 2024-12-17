@@ -24,7 +24,7 @@ onMounted(async () => {
   if (user.value.id !== post.value.user_id) {
     router.push({ name: "home" });
   } else {
-    formData.title = post.value.title
+    formData.title = post.value.title;
     formData.body = post.value.body;
   }
 });
@@ -51,7 +51,6 @@ onMounted(async () => {
         ></textarea>
         <p v-if="errors.body" class="error">{{ errors.body[0] }}</p>
       </div>
-
 
       <button class="primary-btn">Update</button>
     </form>
