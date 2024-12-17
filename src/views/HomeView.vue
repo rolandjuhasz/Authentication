@@ -1,6 +1,7 @@
 <script setup>
 import { usePostStore } from '@/stores/posts';
 import { onMounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 
 const {getAllPost} = usePostStore()
@@ -20,6 +21,7 @@ onMounted(async() => posts.value = await getAllPost());
         <h2 class="font-bold text-3xl">{{ item.title }}</h2>
         <p class="text-xs text-slate-600 mb-4">Posted by {{ item.user.name }}</p>
         <p>{{ item.body }}</p>
+        <RouterLink :to="{name: 'show', params: {id: item.id}}" class="text-blue-500 font-bold underline">Read more...</RouterLink>
       </div>
     </div>
 
