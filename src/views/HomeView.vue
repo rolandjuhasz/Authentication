@@ -7,6 +7,7 @@ const { getAllPosts } = usePostsStore();
 const posts = ref([]);
 
 onMounted(async () => (posts.value = await getAllPosts()));
+
 </script>
 
 <template>

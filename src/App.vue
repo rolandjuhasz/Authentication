@@ -10,6 +10,9 @@ const authStore = useAuthStore();
     <nav>
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
 
+        <RouterLink :to="{ name: 'datas' }" class="nav-link">
+          Datas
+        </RouterLink>
       <div v-if="authStore.user" class="flex items-center space-x-6">
         <p class="text-sm text-slate-300">
           Welcome back {{ authStore.user.name }}
@@ -29,6 +32,7 @@ const authStore = useAuthStore();
         <RouterLink :to="{ name: 'login' }" class="nav-link">
           Login
         </RouterLink>
+
       </div>
     </nav>
   </header>
