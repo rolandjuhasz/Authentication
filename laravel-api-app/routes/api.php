@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,4 +17,5 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/photos', [PhotoController::class, 'index']);
+Route::get('/images', [ImageController::class, 'index']); // A képek lekérésére szolgáló API
+
