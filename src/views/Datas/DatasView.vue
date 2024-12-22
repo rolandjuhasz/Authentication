@@ -17,10 +17,26 @@ onMounted(async () => {
 
 const selectedForm = ref(null)
 
-// Szűrjük le a 'cardio' kategóriájú képeket
+
 const filteredCardioImages = computed(() => {
   return images.value.filter(image => image.category === 'cardio');
 });
+
+const height = ref(""); // Magasság input
+const weight = ref(""); // Súly input
+const bmi = ref(null); // Kiszámított BMI
+
+// BMI számítás funkció
+const calculateBMI = () => {
+  // Ellenőrzés, hogy a bemeneti értékek érvényesek-e
+  if (height.value && weight.value) {
+    const heightInMeters = parseFloat(height.value) / 100; // Átváltás méterre
+    const weightInKg = parseFloat(weight.value); // Súly kg-ban
+    bmi.value = weightInKg / (heightInMeters ** 2); // BMI számítása
+  } else {
+    bmi.value = null; // Ha nincsenek meg a bemeneti adatok
+  }
+};
 </script>
 
 <template>
@@ -37,17 +53,33 @@ const filteredCardioImages = computed(() => {
         <h1 v-if="selectedForm === null">Please choose a workout form</h1>
         
         <h1 v-if="selectedForm === 'cardio'">
-  <label for="" class="text-center">Height</label>
-  <input type="text">
-  <label for="" class="text-center mt-5">Current Weight</label>
-  <input type="text">
+          <label for="height" class="text-center">Height (in cm)</label>
+          <input
+            id="height"
+            v-model="height"
+            type="number"
+            placeholder="Enter your height"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          />
+          <label for="weight" class="text-center mt-5">Current Weight (in kg)</label>
+          <input
+            id="weight"
+            v-model="weight"
+            type="number"
+            placeholder="Enter your weight"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          />
   <label for="" class="text-center mt-5">Expected weight</label>
   <input type="text">
   
   <div class="flex justify-center mt-5">
-    <button class="bg-blue-500 text-white font-semibold py-1.5 px-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+    <button class="bg-blue-500 text-white font-semibold py-1.5 px-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300" 
+    @click="calculateBMI">
       Calculating
     </button>
+    <div v-if="bmi !== null" class="mt-4 text-center">
+            <p>Your BMI is: {{ bmi.toFixed(2) }}</p>
+          </div>
   </div>
 </h1>
         <p v-if="selectedForm === 'crowding'">This is the crowding</p>
@@ -61,18 +93,28 @@ const filteredCardioImages = computed(() => {
     </div>
   </main>
 
- <!-- Képek megjelenítése, ha 'cardio' kategória van -->
- <div v-if="selectedForm === 'cardio' && filteredCardioImages.length > 0">
-          <img 
-            v-for="image in filteredCardioImages" 
-            :key="image.id" 
-            :src="`http://localhost:8000/images/${image.image_name}`" 
-            :alt="image.category" 
-            class="w-48 h-auto object-cover mt-5"
-          />
-        </div>
+  <div 
+  v-if="selectedForm === 'cardio' && filteredCardioImages.length && bmi > 23" 
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5"
+>
+  <div 
+    v-for="image in filteredCardioImages" 
+    :key="image.id" 
+    class="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
+  >
+    <img 
+      :src="`http://localhost:8000/images/foods/${image.image_name}`" 
+      :alt="image.category" 
+      class="w-32 h-32 object-cover mx-auto mt-4"
+    />
+    <div class="p-4">
+      <h3 class="font-bold text-lg text-center text-gray-700">{{ image.image_name.slice(0, 5) }}</h3>
+      <p class="text-gray-500 text-sm text-center">This food is recommended based on your BMI.</p>
+    </div>
+  </div>
+</div>
 
-    <!-- Ha nincsenek cardio kategóriájú képek -->
+
     <p v-if="selectedForm === 'cardio' && filteredCardioImages.length === 0">
       No cardio images available.
     </p>

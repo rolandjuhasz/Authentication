@@ -26,9 +26,8 @@ public function up()
      */
 public function down(): void
     {
-        // Ha valamilyen oknál fogva vissza akarjuk vonni a módosítást:
         Schema::table('images', function (Blueprint $table) {
-            $table->dropColumn('category'); // A category oszlop eltávolítása
+            $table->dropColumn('category'); 
         });
     }
 };
