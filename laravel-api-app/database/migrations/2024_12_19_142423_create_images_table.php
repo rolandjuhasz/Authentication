@@ -14,18 +14,21 @@ public function up()
 {
     Schema::create('images', function (Blueprint $table) {
         $table->id();
-        $table->string('image_name');  // Itt kell szerepelnie
+        $table->string('image_name');
+        $table->string('category')->after('image_name');
         $table->timestamps();
     });
 }
 
 
-
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+public function down(): void
     {
-        Schema::dropIfExists('images');
+        // Ha valamilyen oknál fogva vissza akarjuk vonni a módosítást:
+        Schema::table('images', function (Blueprint $table) {
+            $table->dropColumn('category'); // A category oszlop eltávolítása
+        });
     }
 };

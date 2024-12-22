@@ -8,11 +8,11 @@ const authStore = useAuthStore();
 <template>
   <header>
     <nav>
-      <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
+      <div class="flex justify-start gap-4">
+  <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
+  <RouterLink :to="{ name: 'datas' }" class="nav-link">Datas</RouterLink>
+</div>
 
-        <RouterLink :to="{ name: 'datas' }" class="nav-link">
-          Datas
-        </RouterLink>
       <div v-if="authStore.user" class="flex items-center space-x-6">
         <p class="text-sm text-slate-300">
           Welcome back {{ authStore.user.name }}
