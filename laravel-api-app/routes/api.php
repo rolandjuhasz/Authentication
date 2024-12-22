@@ -17,5 +17,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/images', [ImageController::class, 'index']); // A képek lekérésére szolgáló API
+Route::get('/images', [ImageController::class, 'index']); // Képek listázása
+Route::post('/images', [ImageController::class, 'store']); // Kép feltöltése
 

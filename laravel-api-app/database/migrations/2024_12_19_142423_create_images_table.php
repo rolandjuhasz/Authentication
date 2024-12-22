@@ -14,10 +14,11 @@ public function up()
 {
     Schema::create('images', function (Blueprint $table) {
         $table->id();
-        $table->string('image_name');
+        $table->string('image_name');  // Itt kell szerepelnie
         $table->timestamps();
     });
 }
+
 
 
     /**
