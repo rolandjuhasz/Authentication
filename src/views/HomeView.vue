@@ -6,7 +6,16 @@ import { RouterLink } from "vue-router";
 const { getAllPosts } = usePostsStore();
 const posts = ref([]);
 
-onMounted(async () => (posts.value = await getAllPosts()));
+onMounted(async () => {
+  const allPosts = await getAllPosts();
+  
+  posts.value = allPosts.sort((a, b) => {
+    if (a.user.admin && !b.user.admin) return -1;
+    if (!a.user.admin && b.user.admin) return 1;
+    return 0;
+  });
+});
+
 
 </script>
 
@@ -18,11 +27,17 @@ onMounted(async () => (posts.value = await getAllPosts()));
       <div
         v-for="post in posts"
         :key="post.id"
-        class="border-l-4 border-blue-500 pl-4 mb-12"
+        :class="{'border-l-4 border-red-800' : post.user.admin, 'border-l-4 border-blue-500 pl-4 mb-12' : post.user}"
       >
-        <h2 class="font-bold text-3xl">{{ post.title }}</h2>
+        <h2 class="font-bold text-3xl">
+          <span v-if="post.user.admin">
+            <i class="fa-solid fa-thumbtack text-yellow-600"></i>
+          </span>
+          {{ post.title }}
+          </h2>
         <p class="text-xs text-slate-600 mb-4">
-          Posted by {{ post.user.name }} <br>{{post.user.admin}}
+          Posted by  <span :class="{'text-red-800 font-bold' : post.user.admin}">{{ post.user.admin ? 'Admin' : post.user.name }} </span> 
+          <br>
         </p>
         <p>
           {{ post.body }}

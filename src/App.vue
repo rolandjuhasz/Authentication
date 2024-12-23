@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { useAuthStore } from "./stores/auth";
+import '@fortawesome/fontawesome-free/css/all.css';
 
 const authStore = useAuthStore();
 </script>

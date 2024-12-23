@@ -10,6 +10,7 @@ const formData = reactive({
   title: "",
   body: "",
 });
+
 </script>
 
 <template>

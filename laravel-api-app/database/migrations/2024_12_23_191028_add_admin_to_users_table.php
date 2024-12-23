@@ -9,14 +9,14 @@ class AddAdminToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('admin')->nullable(); // Az oszlop hozzáadása
+            $table->string('admin')->nullable(); 
         });
     }
 
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('admin'); // Az oszlop eltávolítása
+            $table->dropColumn('admin'); 
         });
     }
 }

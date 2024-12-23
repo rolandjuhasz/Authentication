@@ -34,12 +34,12 @@ class PostController extends Controller implements HasMiddleware
         $fields = $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Validáció a képfájlra
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048' 
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads', 'public'); // Kép mentése
-            $fields['image'] = $imagePath; // Elérési út mentése a 'image' mezőben
+            $imagePath = $request->file('image')->store('uploads', 'public'); 
+            $fields['image'] = $imagePath;
         }
 
         $post = $request->user()->posts()->create($fields);
@@ -53,7 +53,10 @@ class PostController extends Controller implements HasMiddleware
      */
     public function show(Post $post)
     {
-        $post->image = asset('storage/' . $post->image); // A kép URL-jének biztosítása
+        if ($post->image) {
+            $post->image = asset('storage/' . $post->image);
+        }
+    
         return ['post' => $post, 'user' => $post->user];
     }
     
@@ -63,27 +66,25 @@ class PostController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Post $post)
 {
-    // Jogosultság ellenőrzése: a felhasználó szerkesztheti a posztot, ha ő a tulajdonos vagy admin
+
     Gate::authorize('modify', $post);
 
     // Validáljuk a bejövő adatokat
     $fields = $request->validate([
         'title' => 'required|max:255',
         'body' => 'required',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Kép validálása, ha van
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' 
     ]);
 
-    // Ha van új kép, tároljuk és frissítjük az elérési utat
+
     if ($request->hasFile('image')) {
-        // Kép tárolása
+
         $imagePath = $request->file('image')->store('uploads', 'public');
-        $fields['image'] = $imagePath; // Elérési út frissítése
+        $fields['image'] = $imagePath;
     }
 
-    // Poszt frissítése a validált adatokkal
     $post->update($fields);
 
-    // Visszaadjuk a frissített posztot és a felhasználót
     return ['post' => $post, 'user' => $post->user];
 }
 
