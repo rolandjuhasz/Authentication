@@ -1,8 +1,11 @@
 <script setup>
+import { useAuthStore } from "@/stores/auth";
 import { useImagesStore } from "@/stores/photo";
 import { usePostsStore } from "@/stores/posts";
 import { computed, onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
+
+const authStore = useAuthStore();
 
 const { getAllPosts } = usePostsStore();
 const posts = ref([]);
@@ -19,22 +22,23 @@ const selectedForm = ref(null)
 
 
 const filteredCardioImages = computed(() => {
-  return images.value.filter(image => image.category === 'cardio');
+  return images.value.filter(image => image.category === 'cardio' || image.category === 'crow');
 });
 
-const height = ref(""); // Magasság input
-const weight = ref(""); // Súly input
-const bmi = ref(null); // Kiszámított BMI
+const height = ref("");
+const weight = ref(""); 
+const bmi = ref(null); 
+const errorMessage = ref(""); 
 
-// BMI számítás funkció
+
 const calculateBMI = () => {
-  // Ellenőrzés, hogy a bemeneti értékek érvényesek-e
   if (height.value && weight.value) {
-    const heightInMeters = parseFloat(height.value) / 100; // Átváltás méterre
-    const weightInKg = parseFloat(weight.value); // Súly kg-ban
-    bmi.value = weightInKg / (heightInMeters ** 2); // BMI számítása
+    const heightInMeters = parseFloat(height.value) / 100;
+    const weightInKg = parseFloat(weight.value);
+    bmi.value = weightInKg / (heightInMeters ** 2);
   } else {
-    bmi.value = null; // Ha nincsenek meg a bemeneti adatok
+    bmi.value = null;
+    errorMessage.value = "Please enter a valid number"
   }
 };
 </script>
@@ -50,9 +54,10 @@ const calculateBMI = () => {
       </div>
       
       <div class="flex flex-col items-center">
-        <h1 v-if="selectedForm === null">Please choose a workout form</h1>
+        <h1 v-if="!authStore.user">Please log in!</h1>
+        <h1 v-else-if="authStore.user && selectedForm === null">Please choose a workout form!</h1>
         
-        <h1 v-if="selectedForm === 'cardio'">
+        <h1 v-if="selectedForm === 'cardio' && authStore.user">
           <label for="height" class="text-center">Height (in cm)</label>
           <input
             id="height"
@@ -77,12 +82,16 @@ const calculateBMI = () => {
     @click="calculateBMI">
       Calculating
     </button>
+  </div>
     <div v-if="bmi !== null" class="mt-4 text-center">
             <p>Your BMI is: {{ bmi.toFixed(2) }}</p>
           </div>
-  </div>
+          <div v-else class="mt-4 text-center">
+            <p class=" text-red-500 font-bold">{{ errorMessage}}</p>
+          </div>
 </h1>
-        <p v-if="selectedForm === 'crowding'">This is the crowding</p>
+
+        <p v-if="selectedForm === 'crowding' && authStore.user">This is the crowding</p>
       </div>
 
 
@@ -100,22 +109,24 @@ const calculateBMI = () => {
   <div 
     v-for="image in filteredCardioImages" 
     :key="image.id" 
-    class="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
+    class="bg-green-200 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
   >
     <img 
       :src="`http://localhost:8000/images/foods/${image.image_name}`" 
       :alt="image.category" 
       class="w-32 h-32 object-cover mx-auto mt-4"
     />
-    <div class="p-4">
-      <h3 class="font-bold text-lg text-center text-gray-700">{{ image.image_name.slice(0, 5) }}</h3>
-      <p class="text-gray-500 text-sm text-center">This food is recommended based on your BMI.</p>
+    <div class="flex">
+      <div class="p-4 justify-center">
+        <h4 class=" text-lg text-center text-gray-700">{{ image.food_info }}</h4>
+        <p class="text-gray-500 text-sm text-center">({{ image.calories }})</p>
+      </div>
     </div>
   </div>
 </div>
 
 
-    <p v-if="selectedForm === 'cardio' && filteredCardioImages.length === 0">
+    <p v-if="selectedForm === 'cardio' && !filteredCardioImages.length">
       No cardio images available.
     </p>
 </template>
