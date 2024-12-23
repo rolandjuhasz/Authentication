@@ -22,7 +22,7 @@ onMounted(async () => (posts.value = await getAllPosts()));
       >
         <h2 class="font-bold text-3xl">{{ post.title }}</h2>
         <p class="text-xs text-slate-600 mb-4">
-          Posted by {{ post.user.name }}
+          Posted by {{ post.user.name }} <br>{{post.user.admin}}
         </p>
         <p>
           {{ post.body }}

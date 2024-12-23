@@ -50,7 +50,8 @@ const calculateBMI = () => {
     <div class="flex justify-between gap-8">
       <div class="flex flex-col items-center">
         <img :src="`http://localhost:8000/images/cardio.png`" alt="cardio" class="w-48 h-auto object-cover" />
-        <button class="mt-5" @click="selectedForm = 'cardio'">Cardio</button>
+        <button class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="selectedForm = 'cardio'" 
+        :class="{'text-green-500 ' : authStore.user, 'cursor-not-allowed': !authStore.user}">Cardio</button>
       </div>
       
       <div class="flex flex-col items-center">
@@ -97,7 +98,8 @@ const calculateBMI = () => {
 
       <div class="flex flex-col items-center">
         <img :src="`http://localhost:8000/images/crowding.png`" alt="crowding" class="w-48 h-auto object-cover" />
-        <button class="mt-5" @click="selectedForm = 'crowding'">Crowding</button>
+        <button class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="selectedForm = 'crowding'" 
+        :class="{'text-green-500 ' : authStore.user, 'cursor-not-allowed': !authStore.user}">Crowding</button>
       </div>
     </div>
   </main>

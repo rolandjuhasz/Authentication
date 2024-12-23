@@ -18,14 +18,14 @@ onMounted(async () => (post.value = await getPost(route.params.id)));
       <div class="border-l-4 border-blue-500 pl-4 mt-12">
         <h2 class="font-bold text-3xl">{{ post.title }}</h2>
         <p class="text-xs text-slate-600 mb-4">
-          Posted by {{ post.user.name }}
+          Posted by {{ post.user.name }} <br>{{ post.user.admin }}
         </p>
         <p>
           {{ post.body }}
         </p>
 
         <div
-          v-if="authStore.user && authStore.user.id === post.user_id"
+          v-if="authStore.user && authStore.user.id === post.user_id || authStore.user.admin === 'Admin'"
           class="flex items-center gap-6 mt-6"
         >
           <form @submit.prevent="deletePost(post)">

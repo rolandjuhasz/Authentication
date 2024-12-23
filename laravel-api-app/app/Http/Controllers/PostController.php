@@ -63,8 +63,10 @@ class PostController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Post $post)
 {
+    // Jogosultság ellenőrzése: a felhasználó szerkesztheti a posztot, ha ő a tulajdonos vagy admin
     Gate::authorize('modify', $post);
 
+    // Validáljuk a bejövő adatokat
     $fields = $request->validate([
         'title' => 'required|max:255',
         'body' => 'required',
@@ -73,14 +75,18 @@ class PostController extends Controller implements HasMiddleware
 
     // Ha van új kép, tároljuk és frissítjük az elérési utat
     if ($request->hasFile('image')) {
+        // Kép tárolása
         $imagePath = $request->file('image')->store('uploads', 'public');
         $fields['image'] = $imagePath; // Elérési út frissítése
     }
 
+    // Poszt frissítése a validált adatokkal
     $post->update($fields);
 
+    // Visszaadjuk a frissített posztot és a felhasználót
     return ['post' => $post, 'user' => $post->user];
 }
+
 
 
     /**
@@ -88,10 +94,12 @@ class PostController extends Controller implements HasMiddleware
      */
     public function destroy(Post $post)
     {
-        Gate::authorize('modify', $post);
-
+        if (!Gate::allows('modify', $post)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    
         $post->delete();
-
+    
         return ['message' => 'The post was deleted'];
     }
 }

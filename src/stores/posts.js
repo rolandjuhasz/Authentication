@@ -44,7 +44,7 @@ export const usePostsStore = defineStore("postsStore", {
     /******************* Delete a post *******************/
     async deletePost(post) {
       const authStore = useAuthStore();
-      if (authStore.user.id === post.user_id) {
+      if (authStore.user.id === post.user_id || authStore.user.admin === "Admin") {
         const res = await fetch(`/api/posts/${post.id}`, {
           method: "delete",
           headers: {
@@ -62,9 +62,9 @@ export const usePostsStore = defineStore("postsStore", {
     /******************* Update a post *******************/
     async updatePost(post, formData) {
       const authStore = useAuthStore();
-      if (authStore.user.id === post.user_id) {
+      if (authStore.user.id === post.user_id || authStore.user.admin === 'Admin') {
         const res = await fetch(`/api/posts/${post.id}`, {
-          method: "put",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
