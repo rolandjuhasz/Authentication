@@ -15,18 +15,21 @@ onMounted(async () => (post.value = await getPost(route.params.id)));
 <template>
   <main>
     <div v-if="post">
-      <div class="border-l-4 border-blue-500 pl-4 mt-12">
+      <div :class="{'border-l-4 mt-12 border-red-800' : post.user.admin, 'border-l-4 border-blue-500 pl-4 mb-12 mt-12' : post.user}">
         <h2 class="font-bold text-3xl">{{ post.title }}</h2>
         <p class="text-xs text-slate-600 mb-4">
           Posted by 
           <span :class="{'text-red-800 font-bold' : post.user.admin}">{{ post.user.admin ? 'Admin' : post.user.name }} </span> 
+          <br>
+
         </p>
         <p>
           {{ post.body }}
         </p>
 
+
         <div
-          v-if="authStore.user && authStore.user.id === post.user_id || authStore.user.admin"
+          v-if="authStore.user && authStore.user.id === post.user_id"
           class="flex items-center gap-6 mt-6"
         >
           <form @submit.prevent="deletePost(post)">
@@ -37,11 +40,11 @@ onMounted(async () => (post.value = await getPost(route.params.id)));
             </button>
           </form>
 
-          <RouterLink
-            :to="{ name: 'update', params: { id: post.id } }"
-            class="text-green-500 font-bold px-2 py-1 border border-green-300"
-            >Update</RouterLink
-          >
+            <RouterLink
+              :to="{ name: 'update', params: { id: post.id } }"
+              class="text-green-500 font-bold px-2 py-1 border border-green-300"
+              >Update</RouterLink
+            >
         </div>
       </div>
     </div>

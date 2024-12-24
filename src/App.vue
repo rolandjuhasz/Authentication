@@ -11,7 +11,7 @@ const authStore = useAuthStore();
     <nav>
       <div class="flex justify-start gap-4">
   <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
-  <RouterLink :to="{ name: 'datas' }" class="nav-link">Datas</RouterLink>
+  <RouterLink :to="{ name: 'diet' }" class="nav-link">Diet</RouterLink>
 </div>
 
       <div v-if="authStore.user" class="flex items-center space-x-6">

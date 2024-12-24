@@ -47,8 +47,8 @@ const router = createRouter({
       meta: { auth: true },
     },
     {
-      path: "/datas",
-      name: "datas",
+      path: "/diet",
+      name: "diet",
       component: DatasView,
     },
   ],
