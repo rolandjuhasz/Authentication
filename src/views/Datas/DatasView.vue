@@ -38,21 +38,23 @@ const calories = ref(null);
 
 const calculateBmr = () => {
   let BMR = null;
-
-  if (gender.value === 'male') {
-    BMR = (13.397 * weight.value) + (4.799 * height.value) - (5.677 * age.value + 5) + 88.362;
-  } else if (gender.value === 'female') {
-    BMR = 655 + (9.563 * weight.value) + (1.850 * height.value) - (4.676 * age.value);
+  if(gender.value === 'male') {
+    BMR = (10 * weight.value) + (6.25 * height.value) - (5 * age.value) + 5
+  } else if(gender.value === 'female') {
+    BMR = (10 * weight.value) + (6.25 * height.value) - (5 * age.value) - 161
+  } else {
+    errorMessage.value = "Please select a valid gender!";
+    return
   }
 
   const TDEE = BMR * activityLevel.value;
 
   calories.value = {
-    BMR: BMR.toFixed(2),
-    TDEE: TDEE.toFixed(2),
-    caloriesToLose: (TDEE - ((weight.value - expectedWeight.value) * 7700 / 30)).toFixed(2),
-  };
-};
+    BMR: BMR.toFixed(1),
+    TDEE: TDEE.toFixed(1)
+  }
+  errorMessage.value = ""
+}
 
 
 
@@ -65,13 +67,13 @@ const calculateBmr = () => {
     </h1>
 
     <div class="flex justify-between gap-8">
-      <!-- Cardio Section -->
+
       <div class="flex flex-col items-center">
-        <img
+        <!-- <img
           src="http://localhost:8000/images/cardio.png"
           alt="cardio"
           class="w-48 h-auto object-cover"
-        />
+        /> -->
         <button
           class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           :class="{ 'cursor-not-allowed opacity-50': !authStore.user }"
@@ -82,19 +84,19 @@ const calculateBmr = () => {
         </button>
       </div>
 
-       <!-- Form Section -->
+
        <div class="flex flex-col items-center">
         <h1 v-if="!authStore.user">Please log in!</h1>
         <h1 v-else-if="!selectedForm">Please choose a workout form!</h1>
 
-        <div v-if="authStore.user && selectedForm === 'cardio'">
+        <div v-if="authStore.user && selectedForm === 'cardio'" class="w-full max-w-md p-4">
           <label for="height" class="text-center">Height (in cm)</label>
           <input
             id="height"
             v-model.number="height"
             type="number"
             placeholder="Enter your height"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           />
 
           <label for="weight" class="text-center mt-5">Current Weight (in kg)</label>
@@ -103,7 +105,7 @@ const calculateBmr = () => {
             v-model.number="weight"
             type="number"
             placeholder="Enter your weight"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           />
 
           <label for="expectedWeight" class="text-center mt-5">Expected Weight</label>
@@ -112,7 +114,7 @@ const calculateBmr = () => {
             v-model.number="expectedWeight"
             type="number"
             placeholder="Enter your expected weight"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           />
 
           <label for="age" class="text-center mt-5">Age</label>
@@ -121,14 +123,14 @@ const calculateBmr = () => {
             v-model.number="age"
             type="number"
             placeholder="Enter your age"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           />
 
           <label for="gender" class="text-center mt-5">Gender</label>
           <select
             id="gender"
             v-model="gender"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           >
             <option value="" disabled>Select gender</option>
             <option value="male">Male</option>
@@ -139,7 +141,7 @@ const calculateBmr = () => {
           <select
             id="activityLevel"
             v-model="activityLevel"
-            class="mt-2 p-2 border border-gray-300 rounded"
+            class="mt-2 p-2 border border-gray-300 rounded w-full"
           >
             <option value="1.2">Sedentary (little to no exercise)</option>
             <option value="1.375">Light Activity (light exercise/sports 1-3 days/week)</option>
@@ -157,7 +159,7 @@ const calculateBmr = () => {
             </button>
           </div>
 
-          <div v-if="calories">
+          <div v-if="calories" class="text-center mt-10">
       <p>BMR: {{ calories.BMR }} kcal/day</p>
       <p>TDEE: {{ calories.TDEE }} kcal/day</p>
       <p>Calories to lose weight: {{ calories.caloriesToLose }} kcal/day</p>
@@ -173,13 +175,13 @@ const calculateBmr = () => {
         <p v-if="selectedForm === 'crowding'">SOON</p>
       </div>
 
-      <!-- Crowding Section -->
+
       <div class="flex flex-col items-center">
-        <img
+        <!-- <img
           src="http://localhost:8000/images/crowding.png"
           alt="crowding"
           class="w-48 h-auto object-cover"
-        />
+        /> -->
         <button
           class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           :class="{ 'cursor-not-allowed opacity-50': !authStore.user }"
@@ -191,7 +193,7 @@ const calculateBmr = () => {
       </div>
     </div>
 
-    <!-- Cardio Images Section -->
+
     <div
       v-if="selectedForm === 'cardio' && filteredCardioImages.length && bmi > 23"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5"
