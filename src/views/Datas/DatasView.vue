@@ -37,6 +37,8 @@ const activityLevel = ref(1.2);
 const calories = ref(null); 
 
 const calculateBmr = () => {
+  if(height.value > 0 || weight.value > 0 || age.value > 0) {
+    
   let BMR = null;
   if(gender.value === 'male') {
     BMR = (10 * weight.value) + (6.25 * height.value) - (5 * age.value) + 5
@@ -46,17 +48,18 @@ const calculateBmr = () => {
     errorMessage.value = "Please select a valid gender!";
     return
   }
-
   const TDEE = BMR * activityLevel.value;
 
   calories.value = {
     BMR: BMR.toFixed(1),
-    TDEE: TDEE.toFixed(1)
+    TDEE: TDEE.toFixed(1),
+    caloriesToLose: (TDEE - 500).toFixed(1)
   }
   errorMessage.value = ""
+} else {
+  errorMessage.value = "All fields are required"
+  }
 }
-
-
 
 </script>
 
