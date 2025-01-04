@@ -27,108 +27,194 @@ const filteredCardioImages = computed(() => {
 
 const height = ref("");
 const weight = ref(""); 
+const expectedWeight = ref(""); 
 const bmi = ref(null); 
 const errorMessage = ref(""); 
 
+const age = ref(null); 
+const gender = ref(null);
+const activityLevel = ref(1.2);
+const calories = ref(null); 
 
-const calculateBMI = () => {
-  if (height.value && weight.value) {
-    const heightInMeters = parseFloat(height.value) / 100;
-    const weightInKg = parseFloat(weight.value);
-    bmi.value = weightInKg / (heightInMeters ** 2);
-  } else {
-    bmi.value = null;
-    errorMessage.value = "Please enter a valid number"
+const calculateBmr = () => {
+  let BMR = null;
+
+  if (gender.value === 'male') {
+    BMR = (13.397 * weight.value) + (4.799 * height.value) - (5.677 * age.value + 5) + 88.362;
+  } else if (gender.value === 'female') {
+    BMR = 655 + (9.563 * weight.value) + (1.850 * height.value) - (4.676 * age.value);
   }
+
+  const TDEE = BMR * activityLevel.value;
+
+  calories.value = {
+    BMR: BMR.toFixed(2),
+    TDEE: TDEE.toFixed(2),
+    caloriesToLose: (TDEE - ((weight.value - expectedWeight.value) * 7700 / 30)).toFixed(2),
+  };
 };
+
+
+
 </script>
 
 <template>
   <main>
-    <h1 class="title bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-bold text-4xl p-4 rounded-lg shadow-lg">Eat healthy!</h1>
-    
+    <h1 class="title bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-bold text-4xl p-4 rounded-lg shadow-lg">
+      Eat healthy!
+    </h1>
+
     <div class="flex justify-between gap-8">
+      <!-- Cardio Section -->
       <div class="flex flex-col items-center">
-        <img :src="`http://localhost:8000/images/cardio.png`" alt="cardio" class="w-48 h-auto object-cover" />
-        <button class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="selectedForm = 'cardio'" 
-        :class="{'text-green-500 ' : authStore.user, 'cursor-not-allowed': !authStore.user}">Cardio</button>
+        <img
+          src="http://localhost:8000/images/cardio.png"
+          alt="cardio"
+          class="w-48 h-auto object-cover"
+        />
+        <button
+          class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          :class="{ 'cursor-not-allowed opacity-50': !authStore.user }"
+          :disabled="!authStore.user"
+          @click="selectedForm = 'cardio'"
+        >
+          Cardio
+        </button>
       </div>
-      
-      <div class="flex flex-col items-center">
+
+       <!-- Form Section -->
+       <div class="flex flex-col items-center">
         <h1 v-if="!authStore.user">Please log in!</h1>
-        <h1 v-else-if="authStore.user && selectedForm === null">Please choose a workout form!</h1>
-        
-        <h1 v-if="selectedForm === 'cardio' && authStore.user">
+        <h1 v-else-if="!selectedForm">Please choose a workout form!</h1>
+
+        <div v-if="authStore.user && selectedForm === 'cardio'">
           <label for="height" class="text-center">Height (in cm)</label>
           <input
             id="height"
-            v-model="height"
+            v-model.number="height"
             type="number"
             placeholder="Enter your height"
             class="mt-2 p-2 border border-gray-300 rounded"
           />
+
           <label for="weight" class="text-center mt-5">Current Weight (in kg)</label>
           <input
             id="weight"
-            v-model="weight"
+            v-model.number="weight"
             type="number"
             placeholder="Enter your weight"
             class="mt-2 p-2 border border-gray-300 rounded"
           />
-  <label for="" class="text-center mt-5">Expected weight</label>
-  <input type="text">
-  
-  <div class="flex justify-center mt-5">
-    <button class="bg-blue-500 text-white font-semibold py-1.5 px-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300" 
-    @click="calculateBMI">
-      Calculating
-    </button>
-  </div>
-    <div v-if="bmi !== null" class="mt-4 text-center">
-            <p>Your BMI is: {{ bmi.toFixed(2) }}</p>
-          </div>
-          <div v-else class="mt-4 text-center">
-            <p class=" text-red-500 font-bold">{{ errorMessage}}</p>
-          </div>
-</h1>
 
-        <p v-if="selectedForm === 'crowding' && authStore.user">This is the crowding</p>
+          <label for="expectedWeight" class="text-center mt-5">Expected Weight</label>
+          <input
+            id="expectedWeight"
+            v-model.number="expectedWeight"
+            type="number"
+            placeholder="Enter your expected weight"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          />
+
+          <label for="age" class="text-center mt-5">Age</label>
+          <input
+            id="age"
+            v-model.number="age"
+            type="number"
+            placeholder="Enter your age"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          />
+
+          <label for="gender" class="text-center mt-5">Gender</label>
+          <select
+            id="gender"
+            v-model="gender"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          >
+            <option value="" disabled>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+
+          <label for="activityLevel" class="text-center mt-5">Activity Level</label>
+          <select
+            id="activityLevel"
+            v-model="activityLevel"
+            class="mt-2 p-2 border border-gray-300 rounded"
+          >
+            <option value="1.2">Sedentary (little to no exercise)</option>
+            <option value="1.375">Light Activity (light exercise/sports 1-3 days/week)</option>
+            <option value="1.55">Moderate Activity (moderate exercise/sports 3-5 days/week)</option>
+            <option value="1.725">Very Active (hard exercise/sports 6-7 days a week)</option>
+            <option value="1.9">Extremely Active (very hard exercise/physical job)</option>
+          </select>
+
+          <div class="flex justify-center mt-5">
+            <button
+              class="bg-green-500 text-white font-semibold py-1.5 px-2 rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 ml-4"
+              @click="calculateBmr"
+            >
+              Calculate BMR
+            </button>
+          </div>
+
+          <div v-if="calories">
+      <p>BMR: {{ calories.BMR }} kcal/day</p>
+      <p>TDEE: {{ calories.TDEE }} kcal/day</p>
+      <p>Calories to lose weight: {{ calories.caloriesToLose }} kcal/day</p>
+      <p>Calories to gain weight: {{ calories.caloriesToGain }} kcal/day</p>
+    </div>
+
+          <div v-if="errorMessage" class="mt-4 text-center">
+            <p class="text-red-500 font-bold">{{ errorMessage }}</p>
+          </div>
+        </div>
+
+
+        <p v-if="selectedForm === 'crowding'">SOON</p>
       </div>
 
-
+      <!-- Crowding Section -->
       <div class="flex flex-col items-center">
-        <img :src="`http://localhost:8000/images/crowding.png`" alt="crowding" class="w-48 h-auto object-cover" />
-        <button class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="selectedForm = 'crowding'" 
-        :class="{'text-green-500 ' : authStore.user, 'cursor-not-allowed': !authStore.user}">Crowding</button>
+        <img
+          src="http://localhost:8000/images/crowding.png"
+          alt="crowding"
+          class="w-48 h-auto object-cover"
+        />
+        <button
+          class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          :class="{ 'cursor-not-allowed opacity-50': !authStore.user }"
+          :disabled="!authStore.user"
+          @click="selectedForm = 'crowding'"
+        >
+          Crowding
+        </button>
       </div>
     </div>
-  </main>
 
-  <div 
-  v-if="selectedForm === 'cardio' && filteredCardioImages.length && bmi > 23" 
-  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5"
->
-  <div 
-    v-for="image in filteredCardioImages" 
-    :key="image.id" 
-    class="bg-green-200 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
-  >
-    <img 
-      :src="`http://localhost:8000/images/foods/${image.image_name}`" 
-      :alt="image.category" 
-      class="w-32 h-32 object-cover mx-auto mt-4"
-    />
-    <div class="flex">
-      <div class="p-4 justify-center">
-        <h4 class=" text-lg text-center text-gray-700">{{ image.food_info }}</h4>
-        <p class="text-gray-500 text-sm text-center">({{ image.calories }})</p>
+    <!-- Cardio Images Section -->
+    <div
+      v-if="selectedForm === 'cardio' && filteredCardioImages.length && bmi > 23"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5"
+    >
+      <div
+        v-for="image in filteredCardioImages"
+        :key="image.id"
+        class="bg-green-200 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
+      >
+        <img
+          :src="`http://localhost:8000/images/foods/${image.image_name}`"
+          :alt="image.category"
+          class="w-32 h-32 object-cover mx-auto mt-4"
+        />
+        <div class="p-4 text-center">
+          <h4 class="text-lg text-gray-700">{{ image.food_info }}</h4>
+          <p class="text-gray-500 text-sm">({{ image.calories }})</p>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-
-    <p v-if="selectedForm === 'cardio' && !filteredCardioImages.length">
+    <p v-if="selectedForm === 'cardio' && !filteredCardioImages.length" class="mt-4 text-center">
       No cardio images available.
     </p>
+  </main>
 </template>
