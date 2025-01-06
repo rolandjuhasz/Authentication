@@ -1,16 +1,10 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
 import { useImagesStore } from "@/stores/photo";
-import { usePostsStore } from "@/stores/posts";
 import { computed, onMounted, ref } from "vue";
-import { RouterLink } from "vue-router";
 import CardioView from "./CardioView.vue";
 
 const authStore = useAuthStore();
-
-const { getAllPosts } = usePostsStore();
-const posts = ref([]);
-onMounted(async () => (posts.value = await getAllPosts()));
 
 const { getAllImages } = useImagesStore(); 
 const images = ref([]);
@@ -22,7 +16,7 @@ onMounted(async () => {
 const selectedForm = ref(null)
 
 const filteredCardioImages = computed(() => {
-  return images.value.filter(image => image.category === 'cardio' || image.category === 'crow');
+  return images.value.filter(image => image.category === 'cardio');
 });
 
 </script>
@@ -61,7 +55,6 @@ const filteredCardioImages = computed(() => {
         </div>
 
 
-        <p v-if="selectedForm === 'crowding'">SOON</p>
       </div>
 
 
@@ -84,7 +77,7 @@ const filteredCardioImages = computed(() => {
 
 
     <div
-      v-if="selectedForm === 'cardio' && filteredCardioImages.length> 23"
+      v-if="selectedForm === 'cardio' && filteredCardioImages.length > 20"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5"
     >
       <div

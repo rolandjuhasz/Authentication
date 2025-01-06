@@ -9,6 +9,7 @@ const authStore = useAuthStore();
 const height = ref("");
 const weight = ref(""); 
 const expectedWeight = ref(""); 
+const bmi = ref(null); 
 const errorMessage = ref(""); 
 
 const age = ref(null); 
@@ -43,7 +44,6 @@ const calculateBmr = () => {
 </script>
 
 <template>
-
 <label for="height" class="text-center">Height (in cm)</label>
 <input
   id="height"
