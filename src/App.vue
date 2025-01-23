@@ -21,6 +21,9 @@ const authStore = useAuthStore();
         <RouterLink :to="{ name: 'create' }" class="nav-link">
           New Post
         </RouterLink>
+        <RouterLink :to="{ name: 'mypost' }" class="nav-link">
+          My posts
+        </RouterLink>
         <form @submit.prevent="authStore.logout">
           <button class="nav-link">Logout</button>
         </form>

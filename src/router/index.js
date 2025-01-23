@@ -9,6 +9,7 @@ import UpdateView from "@/views/Posts/UpdateView.vue";
 import { useAuthStore } from "@/stores/auth";
 import DatasView from "@/views/Datas/DatasView.vue";
 import CardioView from "@/views/Datas/CardioView.vue";
+import OwnPostView from "@/views/Posts/OwnPostView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,12 @@ const router = createRouter({
       path: "/diet",
       name: "diet",
       component: DatasView,
+    },
+    {
+      path: "/mypost",
+      name: "mypost",
+      component: OwnPostView,
+      meta: { auth: true },
     },
   ],
 });

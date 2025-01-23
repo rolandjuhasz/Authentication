@@ -30,8 +30,7 @@ onMounted(async () => (post.value = await getPost(route.params.id)));
 
         <div
           v-if="authStore.user && authStore.user.id === post.user_id"
-          class="flex items-center gap-6 mt-6"
-        >
+          class="flex items-center gap-6 mt-6">
           <form @submit.prevent="deletePost(post)">
             <button
               class="text-red-500 font-bold px-2 py-1 border border-red-300"

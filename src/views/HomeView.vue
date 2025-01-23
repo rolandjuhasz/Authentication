@@ -8,7 +8,6 @@ const posts = ref([]);
 
 onMounted(async () => {
   const allPosts = await getAllPosts();
-  
   posts.value = allPosts.sort((a, b) => {
     if (a.user.admin && !b.user.admin) return -1;
     if (!a.user.admin && b.user.admin) return 1;
@@ -27,8 +26,7 @@ onMounted(async () => {
       <div
         v-for="post in posts"
         :key="post.id"
-        :class="{'border-l-4 border-red-800' : post.user.admin, 'border-l-4 border-blue-500 pl-4 mb-12' : post.user}"
-      >
+        :class="{'border-l-4 border-red-800' : post.user.admin, 'border-l-4 border-blue-500 pl-4 mb-12' : post.user}">
         <h2 class="font-bold text-3xl">
           <span v-if="post.user.admin">
             <i class="fa-solid fa-thumbtack text-yellow-600"></i>
